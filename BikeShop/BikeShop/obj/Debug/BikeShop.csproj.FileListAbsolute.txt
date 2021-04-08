@@ -41,3 +41,5 @@ C:\Users\ICTUSER\Desktop\proj\BikeShop\BikeShop\obj\Debug\BikeShop.csproj.CoreCo
 C:\Users\ICTUSER\Desktop\proj\BikeShop\BikeShop\obj\Debug\BikeShop.exe
 C:\Users\ICTUSER\Desktop\proj\BikeShop\BikeShop\obj\Debug\BikeShop.pdb
 C:\Users\ICTUSER\Desktop\proj\BikeShop\BikeShop\obj\Debug\GeneratedInternalTypeHelper.g.cs
+C:\Users\ICTUSER\Desktop\proj\BikeShop\BikeShop\obj\Debug\ProductsManagement.g.cs
+C:\Users\ICTUSER\Desktop\proj\BikeShop\BikeShop\obj\Debug\ProductsManagement.baml

@@ -8,7 +8,7 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="Menu">
     <Grid>
-        <Button Content="Products" HorizontalAlignment="Left" Margin="25,114,0,0" VerticalAlignment="Top" Width="220" Height="120"/>
+        <Button Content="Products" HorizontalAlignment="Left" Margin="25,114,0,0" VerticalAlignment="Top" Width="220" Height="120" Click="Products_Button_Click"/>
         <Button Click="Live_Button_Click" Content="Live Support" HorizontalAlignment="Left" Margin="284,114,0,0" VerticalAlignment="Top" Width="220" Height="120"/>
         <Button Click="Email_Button_Click" Content="Email Support" HorizontalAlignment="Left" Margin="548,114,0,0" VerticalAlignment="Top" Width="220" Height="120"/>
         <TextBlock Margin="263,282,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="55" Width="288" FontFamily="Rockwell Extra Bold" FontSize="24" HorizontalAlignment="Left"><Run Text="Adventure Work"/><Run Text="s"/></TextBlock>
