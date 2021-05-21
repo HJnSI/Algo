@@ -1,0 +1,161 @@
+﻿<UserControl x:Class="ResourceMonitorApp.View.MemoryView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:ResourceMonitorApp.View"
+      xmlns:viewModel="clr-namespace:ResourceMonitorApp.ViewModel"
+      xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      >
+
+    <UserControl.DataContext>
+        <viewModel:MemoryViewModel/>
+    </UserControl.DataContext>
+
+    <DockPanel>
+        <Grid Margin="30 0 30 30">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="70"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="200"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Row="0" Grid.Column="0" DockPanel.Dock="Top" Margin="0 15 30 10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="200"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock DockPanel.Dock="Top" Text="프로세스(Memory)" FontSize="18" FontWeight="Bold" Margin="0 10"/>
+                <Grid HorizontalAlignment="Right" Grid.Column="1" Width="200">
+                    <TextBox x:Name="SearchTermTextBox" Padding="0 5" Width="200" VerticalAlignment="Center" HorizontalAlignment="Left"
+                         BorderBrush="LightGray"
+                         Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBlock IsHitTestVisible="False" Text="Search" FontStyle="Italic" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 0 0 0" Foreground="DarkGray">
+                        <TextBlock.Style>
+                            <Style TargetType="{x:Type TextBlock}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Text, ElementName=SearchTermTextBox}" Value="">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                </Grid>
+            </Grid>
+
+            <Grid Grid.Row="0" Grid.Column="1" HorizontalAlignment="Right" Margin="0 20 0 20">
+                <Button Content="LOG 출력" HorizontalAlignment="Right" Padding="5" Command="{Binding LogCommand}"/>
+            </Grid>
+
+            <DockPanel Grid.Row="1" Grid.Column="0" Margin="0 0 30 0">
+                <ListView  Name="lv" FontSize="13" Foreground="Black" BorderBrush="#C3C3C3" ItemsSource="{Binding MemoryList}">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="BorderBrush" Value="#D5D5D5"/>
+                            <Setter Property="BorderThickness" Value="0 0 0 1"/>
+                            <Setter Property="Height" Value="25"/>
+                            <Setter Property="Background">
+                                <Setter.Value>
+                                    <LinearGradientBrush StartPoint="0 0" EndPoint="0 1">
+                                        <LinearGradientBrush.GradientStops>
+                                            <GradientStop Offset="0.0" Color="#FFFFFF"/>
+                                            <GradientStop Offset="1" Color="#F6F6F6" />
+                                        </LinearGradientBrush.GradientStops>
+                                    </LinearGradientBrush>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <ListView.View>
+                        <GridView ColumnHeaderContainerStyle="{StaticResource GridViewColumnHeaderStyle}">
+                            <GridViewColumn Header="이름" DisplayMemberBinding="{Binding PName, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
+                            <GridViewColumn Header="PID" DisplayMemberBinding="{Binding PID, UpdateSourceTrigger=PropertyChanged}" Width="100"/>
+                            <GridViewColumn Header="커밋(KB)" DisplayMemberBinding="{Binding PCommit, UpdateSourceTrigger=PropertyChanged}" Width="100"/>
+                            <GridViewColumn Header="작업 집합(KB)" DisplayMemberBinding="{Binding PMem, UpdateSourceTrigger=PropertyChanged}" Width="100"/>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </DockPanel>
+
+            <Grid Grid.Row="1" Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <DockPanel Grid.Row="0">
+                    <TextBlock DockPanel.Dock="Top" FontSize="12" Text="메모리 사용(GB)" Foreground="Black"></TextBlock>
+                    <lvc:CartesianChart AnimationsSpeed="0:0:0.5" Hoverable="False">
+                        <lvc:CartesianChart.Series>
+                            <lvc:LineSeries Values="{Binding GHelper.ChartValues}" 
+                                    PointGeometry="{x:Null}" 
+                                    LineSmoothness="1"
+                                    StrokeThickness="1" 
+                                    Stroke="#D5AFDF"
+                                    Fill="#F4F2F4"/>
+                        </lvc:CartesianChart.Series>
+                        <lvc:CartesianChart.AxisX>
+                            <lvc:Axis LabelFormatter="{Binding GHelper.DateTimeFormatter}"
+                                        MaxValue="{Binding GHelper.AxisMax}" 
+                                        MinValue="{Binding GHelper.AxisMin}"
+                                        Unit="{Binding GHelper.AxisUnit}"
+                                        Foreground="Black">
+                                <lvc:Axis.Separator>
+                                    <lvc:Separator Step="{Binding GHelper.AxisStep}" />
+                                </lvc:Axis.Separator>
+                            </lvc:Axis>
+                        </lvc:CartesianChart.AxisX>
+                        <lvc:CartesianChart.AxisY>
+                            <lvc:Axis MaxValue="{Binding MaxMemory}" MinValue="0" Foreground="Black">
+                                <lvc:Axis.Separator>
+                                    <lvc:Separator Stroke="#C3C3C3"/>
+                                </lvc:Axis.Separator>
+                            </lvc:Axis>
+                        </lvc:CartesianChart.AxisY>
+                    </lvc:CartesianChart>
+                </DockPanel>
+
+                <DockPanel Grid.Row="1" Margin="0 10">
+                    <DockPanel DockPanel.Dock="Top">
+                        <StackPanel Margin="0 0 20 0">
+                            <TextBlock Text="사용 중"/>
+                            <TextBlock Text="{Binding MemoryState.MemoryUsage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="18" Margin="0 0 0 10"/>
+                        </StackPanel>
+                        <StackPanel>
+                            <TextBlock Text="사용 가능"/>
+                            <TextBlock Text="{Binding MemoryState.MemoryAvailable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="18" Margin="0 0 0 10"/>
+                        </StackPanel>
+                    </DockPanel>
+                    <DockPanel DockPanel.Dock="Top">
+                        <StackPanel Margin="0 0 20 0">
+                            <TextBlock Text="커밋됨"/>
+                            <TextBlock Text="{Binding MemoryState.MemoryCommitted, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="18" Margin="0 0 0 10"/>
+                        </StackPanel>
+                        <StackPanel>
+                            <TextBlock Text="캐시됨"/>
+                            <TextBlock Text="{Binding MemoryState.MemoryCached, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="18" Margin="0 0 0 10"/>
+                        </StackPanel>
+                    </DockPanel>
+                    <DockPanel DockPanel.Dock="Top">
+                        <StackPanel Margin="0 0 20 0">
+                            <TextBlock Text="페이징 풀"/>
+                            <TextBlock Text="{Binding MemoryState.MemoryPagingPool, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="18" Margin="0 0 0 10"/>
+                        </StackPanel>
+                        <StackPanel>
+                            <TextBlock Text="비페이징 풀"/>
+                            <TextBlock Text="{Binding MemoryState.MemoryNonPagingPool, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="18" Margin="0 0 0 10"/>
+                        </StackPanel>
+                    </DockPanel>
+                </DockPanel>
+            </Grid>
+        </Grid>
+    </DockPanel>
+</UserControl>

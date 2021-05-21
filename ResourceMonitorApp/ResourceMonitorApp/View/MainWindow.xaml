@@ -1,0 +1,98 @@
+﻿<Window x:Class="ResourceMonitorApp.View.MainWindow"
+        x:Name="RMWindow"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:ResourceMonitorApp.View"
+      xmlns:viewModel="clr-namespace:ResourceMonitorApp.ViewModel"
+      xmlns:view="clr-namespace:ResourceMonitorApp.View"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      mc:Ignorable="d" 
+      d:DesignHeight="300" d:DesignWidth="200"
+      Background="Transparent"
+      Height="500" Width="1000"
+      WindowStartupLocation="CenterScreen" WindowStyle="None" AllowsTransparency="True"
+      WindowState="{Binding CurWindowState, Mode=TwoWay}"
+      Style="{StaticResource WindowStyle}">
+
+    <Window.DataContext>
+        <viewModel:MainViewModel/>
+    </Window.DataContext>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="35"/>
+            <!--<RowDefinition Height="25"/>-->
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <DockPanel
+            Grid.Row="0"
+            Background="#030303"
+                   LastChildFill="False">
+            <DockPanel.Resources>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="DockPanel.Dock" Value="Right"/>
+                    <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True"/>
+                    <Setter Property="BorderThickness" Value="0"/>
+
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="Button">
+                                <Grid Name="Button_TitleBar" Background="Transparent" Width="50">
+                                    <TextBlock x:Name="TextBlock_TitleBar" Text="{TemplateBinding Content}" FontSize="10"
+                                               Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Grid>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="Button_TitleBar" Property="Background" Value="#686868"/>
+                                    </Trigger>
+                                    <Trigger Property="IsPressed" Value="True">
+                                        <Setter TargetName="Button_TitleBar" Property="Background" Value="#007ACC"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </DockPanel.Resources>
+
+            <TextBlock Text="Resource Monitor" VerticalAlignment="Center" HorizontalAlignment="Center" 
+                       FontSize="18" Foreground="White"
+                       Padding="10"/>
+
+            <Button Content="X" 
+                    Command="{Binding CloseCommand, Mode=OneWay}" 
+                    CommandParameter="{Binding ElementName=RMWindow}"/>
+            <Button Content="ㅁ" Command="{Binding MaxCommand}" />
+            <Button Content="_" Command="{Binding MinCommand}" />
+        </DockPanel>
+
+        <!--<Menu Grid.Row="1" Background="#030303">
+            <MenuItem Header="메뉴1" Foreground="White" FontSize="14">
+                <MenuItem Header="first" Command="{Binding PauseTimerCommand}" Foreground="Black"/>
+            </MenuItem>
+        </Menu>-->
+        
+        <Border Grid.Row="1" Background="White">
+
+            <TabControl TabStripPlacement="Left">
+                <TabItem Header="CPU">
+                    <view:CPUView/>
+                </TabItem>
+                <TabItem Header="메모리">
+                    <view:MemoryView/>
+                </TabItem>
+                <TabItem Header="디스크 및 네트워크">
+                    <view:IOView/>
+                </TabItem>
+                <TabItem Header="PC정보">
+                    <view:PCInfoView/>
+                </TabItem>
+            </TabControl>
+        </Border>
+
+    </Grid>
+
+</Window>
